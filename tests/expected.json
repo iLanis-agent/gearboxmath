@@ -1,0 +1,564 @@
+{
+ "cases": [
+  {
+   "kind": "train",
+   "stages": [
+    {
+     "driver": 12,
+     "driven": 60,
+     "type": "spur"
+    }
+   ],
+   "rpm": 3000,
+   "torque": 0.5,
+   "expected": {
+    "totalRatio": 5.0,
+    "efficiency": 0.98,
+    "outRpm": 600.0,
+    "outTorque": 2.45,
+    "direction": "reversed"
+   }
+  },
+  {
+   "kind": "train",
+   "stages": [
+    {
+     "driver": 12,
+     "driven": 60,
+     "type": "spur"
+    },
+    {
+     "driver": 12,
+     "driven": 60,
+     "type": "spur"
+    }
+   ],
+   "rpm": 3000,
+   "torque": 0.5,
+   "expected": {
+    "totalRatio": 25.0,
+    "efficiency": 0.9603999999999999,
+    "outRpm": 120.0,
+    "outTorque": 12.005000000000003,
+    "direction": "same"
+   }
+  },
+  {
+   "kind": "train",
+   "stages": [
+    {
+     "driver": 20,
+     "driven": 100,
+     "type": "helical"
+    }
+   ],
+   "rpm": 1750,
+   "torque": 3,
+   "expected": {
+    "totalRatio": 5.0,
+    "efficiency": 0.98,
+    "outRpm": 350.0,
+    "outTorque": 14.700000000000001,
+    "direction": "reversed"
+   }
+  },
+  {
+   "kind": "train",
+   "stages": [
+    {
+     "driver": 16,
+     "driven": 48,
+     "type": "bevel"
+    },
+    {
+     "driver": 14,
+     "driven": 56,
+     "type": "spur"
+    }
+   ],
+   "rpm": 1450,
+   "torque": 1.2,
+   "expected": {
+    "totalRatio": 12.0,
+    "efficiency": 0.9408,
+    "outRpm": 120.83333333333333,
+    "outTorque": 13.54752,
+    "direction": "same"
+   }
+  },
+  {
+   "kind": "train",
+   "stages": [
+    {
+     "driver": 10,
+     "driven": 90,
+     "type": "spur"
+    },
+    {
+     "driver": 10,
+     "driven": 80,
+     "type": "spur"
+    },
+    {
+     "driver": 12,
+     "driven": 36,
+     "type": "helical"
+    }
+   ],
+   "rpm": 5000,
+   "torque": 0.05,
+   "expected": {
+    "totalRatio": 216.0,
+    "efficiency": 0.9411919999999999,
+    "outRpm": 23.14814814814815,
+    "outTorque": 10.164873600000002,
+    "direction": "reversed"
+   }
+  },
+  {
+   "kind": "train",
+   "stages": [
+    {
+     "driver": 1,
+     "driven": 40,
+     "type": "worm",
+     "lead": 4
+    },
+    {
+     "driver": 14,
+     "driven": 42,
+     "type": "spur"
+    }
+   ],
+   "rpm": 1400,
+   "torque": 2,
+   "expected": {
+    "totalRatio": 120.0,
+    "efficiency": 0.5252246003190569,
+    "outRpm": 11.666666666666666,
+    "outTorque": 126.05390407657366,
+    "direction": "same"
+   }
+  },
+  {
+   "kind": "train",
+   "stages": [
+    {
+     "driver": 1,
+     "driven": 60,
+     "type": "worm",
+     "lead": 10
+    }
+   ],
+   "rpm": 900,
+   "torque": 5,
+   "expected": {
+    "totalRatio": 60.0,
+    "efficiency": 0.7382208664364752,
+    "outRpm": 15.0,
+    "outTorque": 221.46625993094258,
+    "direction": "reversed"
+   }
+  },
+  {
+   "kind": "train",
+   "stages": [
+    {
+     "driver": 2,
+     "driven": 50,
+     "type": "worm",
+     "lead": 20
+    },
+    {
+     "driver": 18,
+     "driven": 54,
+     "type": "bevel"
+    },
+    {
+     "driver": 12,
+     "driven": 48,
+     "type": "spur"
+    }
+   ],
+   "rpm": 2800,
+   "torque": 0.8,
+   "expected": {
+    "totalRatio": 300.0,
+    "efficiency": 0.79002075680312,
+    "outRpm": 9.333333333333334,
+    "outTorque": 189.6049816327488,
+    "direction": "reversed"
+   }
+  },
+  {
+   "kind": "train",
+   "stages": [
+    {
+     "driver": 17,
+     "driven": 68,
+     "type": "spur"
+    }
+   ],
+   "rpm": 100,
+   "torque": 50,
+   "expected": {
+    "totalRatio": 4.0,
+    "efficiency": 0.98,
+    "outRpm": 25.0,
+    "outTorque": 196.0,
+    "direction": "reversed"
+   }
+  },
+  {
+   "kind": "train",
+   "stages": [
+    {
+     "driver": 12,
+     "driven": 61,
+     "type": "spur"
+    }
+   ],
+   "rpm": 3600,
+   "torque": 0.3,
+   "expected": {
+    "totalRatio": 5.083333333333333,
+    "efficiency": 0.98,
+    "outRpm": 708.1967213114755,
+    "outTorque": 1.4945,
+    "direction": "reversed"
+   }
+  },
+  {
+   "kind": "train",
+   "stages": [
+    {
+     "driver": 8,
+     "driven": 64,
+     "type": "spur"
+    },
+    {
+     "driver": 8,
+     "driven": 64,
+     "type": "spur"
+    },
+    {
+     "driver": 8,
+     "driven": 64,
+     "type": "spur"
+    },
+    {
+     "driver": 8,
+     "driven": 64,
+     "type": "spur"
+    }
+   ],
+   "rpm": 6000,
+   "torque": 0.02,
+   "expected": {
+    "totalRatio": 4096.0,
+    "efficiency": 0.9223681599999999,
+    "outRpm": 1.46484375,
+    "outTorque": 75.56039966719999,
+    "direction": "same"
+   }
+  },
+  {
+   "kind": "train",
+   "stages": [
+    {
+     "driver": 25,
+     "driven": 25,
+     "type": "spur"
+    }
+   ],
+   "rpm": 1000,
+   "torque": 1,
+   "expected": {
+    "totalRatio": 1.0,
+    "efficiency": 0.98,
+    "outRpm": 1000.0,
+    "outTorque": 0.98,
+    "direction": "reversed"
+   }
+  },
+  {
+   "kind": "planetary",
+   "sun": 24,
+   "ring": 72,
+   "fixed": "ring",
+   "rpm": 1200,
+   "torque": 1,
+   "expected": {
+    "planet": 24.0,
+    "ratio": 4.0,
+    "outRpm": 300.0,
+    "outTorque": 3.88
+   }
+  },
+  {
+   "kind": "planetary",
+   "sun": 24,
+   "ring": 72,
+   "fixed": "sun",
+   "rpm": 1200,
+   "torque": 1,
+   "expected": {
+    "planet": 24.0,
+    "ratio": 1.3333333333333333,
+    "outRpm": 900.0,
+    "outTorque": 1.2933333333333332
+   }
+  },
+  {
+   "kind": "planetary",
+   "sun": 24,
+   "ring": 72,
+   "fixed": "carrier",
+   "rpm": 1200,
+   "torque": 1,
+   "expected": {
+    "planet": 24.0,
+    "ratio": -3.0,
+    "outRpm": -400.0,
+    "outTorque": -2.91
+   }
+  },
+  {
+   "kind": "planetary",
+   "sun": 12,
+   "ring": 60,
+   "fixed": "ring",
+   "rpm": 3000,
+   "torque": 0.5,
+   "expected": {
+    "planet": 24.0,
+    "ratio": 6.0,
+    "outRpm": 500.0,
+    "outTorque": 2.91
+   }
+  },
+  {
+   "kind": "planetary",
+   "sun": 18,
+   "ring": 90,
+   "fixed": "sun",
+   "rpm": 900,
+   "torque": 2,
+   "expected": {
+    "planet": 36.0,
+    "ratio": 1.2,
+    "outRpm": 750.0,
+    "outTorque": 2.328
+   }
+  },
+  {
+   "kind": "planetary",
+   "sun": 30,
+   "ring": 78,
+   "fixed": "carrier",
+   "rpm": 750,
+   "torque": 4,
+   "expected": {
+    "planet": 24.0,
+    "ratio": -2.6,
+    "outRpm": -288.46153846153845,
+    "outTorque": -10.088
+   }
+  },
+  {
+   "kind": "planetary",
+   "sun": 12,
+   "ring": 36,
+   "fixed": "ring",
+   "rpm": 2000,
+   "torque": 0.1,
+   "expected": {
+    "planet": 12.0,
+    "ratio": 4.0,
+    "outRpm": 500.0,
+    "outTorque": 0.388
+   }
+  },
+  {
+   "kind": "worm",
+   "lead": 2,
+   "expected": {
+    "eta": 0.3671230445120189,
+    "backdrivable": false
+   }
+  },
+  {
+   "kind": "worm",
+   "lead": 4,
+   "expected": {
+    "eta": 0.5359434697133234,
+    "backdrivable": true
+   }
+  },
+  {
+   "kind": "worm",
+   "lead": 6,
+   "expected": {
+    "eta": 0.6325786923719324,
+    "backdrivable": true
+   }
+  },
+  {
+   "kind": "worm",
+   "lead": 10,
+   "expected": {
+    "eta": 0.7382208664364752,
+    "backdrivable": true
+   }
+  },
+  {
+   "kind": "worm",
+   "lead": 15,
+   "expected": {
+    "eta": 0.803909240615143,
+    "backdrivable": true
+   }
+  },
+  {
+   "kind": "worm",
+   "lead": 20,
+   "expected": {
+    "eta": 0.8397329472822279,
+    "backdrivable": true
+   }
+  },
+  {
+   "kind": "worm",
+   "lead": 30,
+   "expected": {
+    "eta": 0.8744803228816114,
+    "backdrivable": true
+   }
+  },
+  {
+   "kind": "gcd",
+   "a": 12,
+   "b": 60,
+   "expected": {
+    "gcd": 12,
+    "hunting": false,
+    "integerRatio": true
+   }
+  },
+  {
+   "kind": "gcd",
+   "a": 12,
+   "b": 61,
+   "expected": {
+    "gcd": 1,
+    "hunting": true,
+    "integerRatio": false
+   }
+  },
+  {
+   "kind": "gcd",
+   "a": 17,
+   "b": 68,
+   "expected": {
+    "gcd": 17,
+    "hunting": false,
+    "integerRatio": true
+   }
+  },
+  {
+   "kind": "gcd",
+   "a": 8,
+   "b": 64,
+   "expected": {
+    "gcd": 8,
+    "hunting": false,
+    "integerRatio": true
+   }
+  },
+  {
+   "kind": "gcd",
+   "a": 25,
+   "b": 25,
+   "expected": {
+    "gcd": 25,
+    "hunting": false,
+    "integerRatio": true
+   }
+  },
+  {
+   "kind": "gcd",
+   "a": 7,
+   "b": 91,
+   "expected": {
+    "gcd": 7,
+    "hunting": false,
+    "integerRatio": true
+   }
+  },
+  {
+   "kind": "gcd",
+   "a": 100,
+   "b": 35,
+   "expected": {
+    "gcd": 5,
+    "hunting": false,
+    "integerRatio": false
+   }
+  },
+  {
+   "kind": "sizing",
+   "module": 2,
+   "n1": 12,
+   "n2": 60,
+   "expected": {
+    "center": 72.0,
+    "d1": 24,
+    "d2": 120
+   }
+  },
+  {
+   "kind": "sizing",
+   "module": 1.5,
+   "n1": 16,
+   "n2": 48,
+   "expected": {
+    "center": 48.0,
+    "d1": 24.0,
+    "d2": 72.0
+   }
+  },
+  {
+   "kind": "sizing",
+   "module": 3,
+   "n1": 20,
+   "n2": 100,
+   "expected": {
+    "center": 180.0,
+    "d1": 60,
+    "d2": 300
+   }
+  },
+  {
+   "kind": "sizing",
+   "module": 0.8,
+   "n1": 10,
+   "n2": 90,
+   "expected": {
+    "center": 40.0,
+    "d1": 8.0,
+    "d2": 72.0
+   }
+  },
+  {
+   "kind": "sizing",
+   "module": 2.5,
+   "n1": 17,
+   "n2": 68,
+   "expected": {
+    "center": 106.25,
+    "d1": 42.5,
+    "d2": 170.0
+   }
+  }
+ ]
+}
