@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gearboxmath - what your gear train really delivers</title>
+<style>
+:root{--bg:#0d1117;--card:#141b24;--ink:#e8eef5;--mut:#93a3b5;--amber:#f0b45a;--line:#24313f}
+*{box-sizing:border-box;margin:0}
+body{background:var(--bg);color:var(--ink);font:17px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif;padding:40px 16px 70px}
+main{max-width:760px;margin:0 auto}
+.tag{color:var(--amber);font-size:13px;letter-spacing:2px;text-transform:uppercase}
+h1{font-size:44px;line-height:1.1;margin:10px 0 14px}
+h1 span{color:var(--amber)}
+.lede{font-size:20px;color:var(--mut);margin-bottom:26px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;margin-bottom:18px}
+h2{font-size:20px;margin-bottom:10px}
+li{margin:8px 0 8px 20px}
+.cta{display:inline-block;background:var(--amber);color:#14100a;font-weight:700;font-size:18px;padding:14px 30px;border-radius:12px;text-decoration:none;margin-top:8px}
+.cta:hover{filter:brightness(1.1)}
+.small{color:var(--mut);font-size:14px;margin-top:26px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.mini{background:#0f141b;border:1px solid var(--line);border-radius:10px;padding:14px}
+.mini b{color:var(--amber)}
+</style>
+</head>
+<body>
+<main>
+<div class="tag">The problem</div>
+<h1>Your 25:1 gearbox is not <span>25:1</span>.</h1>
+<p class="lede">Every robotics build, 3D-printed actuator and drivetrain project hits the same wall: the ratio on paper and the torque at the output shaft are two different numbers. Mesh losses compound, tooth counts undercut, and worm gears lie about holding loads. Gearboxmath stacks your stages and tells you what actually comes out.</p>
+<a class="cta" href="app.html">Open the calculator</a>
+
+<div class="card" style="margin-top:26px">
+<h2>What it computes</h2>
+<div class="grid2">
+<div class="mini"><b>Real ratio and speed</b><br>Up to 4 stages - spur, helical, bevel or worm - with the product ratio, output rpm and direction (every external mesh flips it).</div>
+<div class="mini"><b>Honest torque</b><br>Ideal torque multiplied by compounding per-mesh efficiency: published typical 98% spur/helical, 96% bevel, and the lead-angle model for worms.</div>
+<div class="mini"><b>Design tripwires</b><br>Undercut warnings below 17 teeth (standard 20&deg; teeth), hunting-tooth checks for even wear, and worm backdrivability from the friction-angle criterion.</div>
+<div class="mini"><b>Planetary bonus</b><br>Sun / ring / carrier via the Willis equation - ring fixed, sun fixed, or the reverse drive nobody expects.</div>
+</div>
+</div>
+
+<div class="card">
+<h2>Why the paper number lies</h2>
+<ul>
+<li><b>Losses multiply, not add.</b> Two 98% meshes are 96.04%, three are 94.1%. A "25:1, plenty of torque" plan quietly loses a chunk per stage.</li>
+<li><b>Integer ratios wear grooves.</b> When tooth counts share factors, the same teeth re-meet every revolution. A hunting ratio (coprime counts) spreads contact across every tooth - one tooth is often the whole fix.</li>
+<li><b>Worms are a different animal.</b> Efficiency follows the lead angle: tan(lead) / tan(lead + friction angle). A shallow 4&deg; lead runs near 54% in the model - and shallow leads self-lock only until vibration says otherwise.</li>
+<li><b>Under 17 teeth undercuts.</b> Standard 20&deg; full-depth teeth lose their root below 17, which is why tiny pinions strip in printed gearboxes.</li>
+</ul>
+</div>
+
+<div class="card">
+<h2>Who it is for</h2>
+<ul>
+<li>Robotics and RC builders sizing an arm, drivetrain or winch</li>
+<li>Makers printing gearboxes who keep stripping pinions</li>
+<li>Students checking whether the textbook answer survives real efficiencies</li>
+<li>Anyone whose motor "should be strong enough" and is not</li>
+</ul>
+</div>
+
+<p class="small">Efficiencies are published typical figures and the worm model is the standard lead-angle approximation - real datasheets, lubricant and temperature win every argument. Mechanical design tool, not a substitute for engineering review.</p>
+</main>
+</body>
+</html>
