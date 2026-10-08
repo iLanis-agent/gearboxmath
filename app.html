@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gearboxmath - gear-train truth-teller</title>
+<style>
+:root{--bg:#0d1117;--card:#141b24;--ink:#e8eef5;--mut:#93a3b5;--amber:#f0b45a;--line:#24313f;--ok:#4ade80;--warn:#fbbf24;--bad:#f87171}
+*{box-sizing:border-box;margin:0}
+body{background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;padding:26px 14px 60px}
+main{max-width:880px;margin:0 auto}
+a.back{color:var(--mut);text-decoration:none;font-size:14px}
+h1{font-size:30px;margin:6px 0 2px}h1 span{color:var(--amber)}
+.sub{color:var(--mut);margin-bottom:20px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:16px}
+.card h2{font-size:19px;margin-bottom:12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px}
+label{display:block;color:var(--mut);font-size:13px;margin-bottom:4px}
+input,select{width:100%;background:#0f141b;border:1px solid var(--line);color:var(--ink);border-radius:8px;padding:9px 10px;font-size:16px}
+button.ghost{background:#1a2531;border:1px solid var(--line);color:var(--ink);border-radius:8px;padding:8px 12px;font-size:14px;cursor:pointer;margin:10px 6px 0 0}
+button.ghost:hover{border-color:var(--amber)}
+.verdicts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:12px}
+.vc{background:#0f141b;border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.vc .k{color:var(--mut);font-size:12px;letter-spacing:1px}
+.vc .n{font-size:24px;font-weight:700;margin:4px 0}
+.vc .h{color:var(--mut);font-size:13px}
+.vc.ok .n{color:var(--ok)}.vc.warn .n{color:var(--warn)}
+.note{color:var(--mut);font-size:13px;margin-top:10px}
+.err{display:none;background:#3a1220;border:1px solid var(--bad);color:#fecaca;border-radius:10px;padding:12px 14px;margin-bottom:14px}
+table{width:100%;border-collapse:collapse;margin-top:12px;font-size:14px}
+th,td{text-align:right;padding:7px 8px;border-bottom:1px solid var(--line)}
+th:first-child,td:first-child{text-align:left}
+th{color:var(--mut);font-weight:600;font-size:12px;letter-spacing:.5px}
+.warnbox{background:#2a2113;border:1px solid var(--warn);border-radius:10px;padding:10px 14px;margin-top:12px;font-size:14px;color:#fde9c0}
+.warnbox li{margin-left:18px}
+#schem{width:100%;display:block;margin:14px auto 0}
+.stagehead{display:flex;justify-content:space-between;align-items:center;margin:14px 0 8px;color:var(--amber);font-weight:600;font-size:15px}
+hr{border:none;border-top:1px solid var(--line);margin:16px 0}
+</style>
+</head>
+<body>
+<main>
+<a class="back" href="index.html">&larr; Gearboxmath</a>
+<h1>Gearbox<span>math</span></h1>
+<p class="sub">Stack your stages, get the honest output. Everything updates live.</p>
+
+<div class="err" id="err"></div>
+
+<div class="card">
+<h2>1. Input</h2>
+<div class="grid">
+<div><label>Motor speed (rpm)</label><input id="rpm" type="number" step="any" value="3000"></div>
+<div><label>Input torque (N&middot;m)</label><input id="torque" type="number" step="any" value="0.5"></div>
+<div><label>Module (mm, for sizing)</label><input id="module" type="number" step="any" value="2"></div>
+</div>
+</div>
+
+<div class="card">
+<h2>2. Stages</h2>
+<div id="stages"></div>
+<button class="ghost" id="add">+ Add stage</button>
+<button class="ghost" id="presetRobot">Preset: robot arm 25:1</button>
+<button class="ghost" id="presetWorm">Preset: worm winch</button>
+</div>
+
+<div class="card">
+<h2>3. What the train really delivers</h2>
+<div class="verdicts">
+<div class="vc ok"><div class="k">TOTAL RATIO</div><div class="n" id="vRatio">-</div><div class="h">product of stage ratios</div></div>
+<div class="vc"><div class="k">OUTPUT SPEED</div><div class="n" id="vRpm">-</div><div class="h" id="vRpmH">rpm</div></div>
+<div class="vc"><div class="k">OUTPUT TORQUE</div><div class="n" id="vTorque">-</div><div class="h" id="vTorqueH">after mesh losses</div></div>
+<div class="vc"><div class="k">DIRECTION</div><div class="n" id="vDir">-</div><div class="h">each external mesh flips it</div></div>
+<div class="vc warn"><div class="k">TRAIN EFFICIENCY</div><div class="n" id="vEta">-</div><div class="h" id="vEtaH">losses compound per stage</div></div>
+</div>
+<table id="tbl">
+<thead><tr><th>Stage</th><th>Teeth</th><th>Type</th><th>Ratio</th><th>Mesh &eta;</th><th>Out rpm</th><th>Out torque</th><th>Dir</th></tr></thead>
+<tbody></tbody>
+</table>
+<div id="warns"></div>
+<p class="note">Per-mesh efficiencies are published typical figures (spur/helical ~98%, bevel ~96%, worm from the published lead-angle model). Real gearbox datasheets beat any table - temperature, lubricant and bearings all take their cut.</p>
+</div>
+
+<div class="card">
+<h2>4. Sizing, module 2 default</h2>
+<div class="verdicts">
+<div class="vc"><div class="k">STAGE 1 CENTER DIST.</div><div class="n" id="vCenter">-</div><div class="h" id="vCenterH">module x (N1+N2) / 2</div></div>
+<div class="vc"><div class="k">SMALLEST GEAR</div><div class="n" id="vSmall">-</div><div class="h" id="vSmallH">17 teeth minimum before undercut</div></div>
+<div class="vc"><div class="k">HUNTING CHECK</div><div class="n" id="vHunt">-</div><div class="h" id="vHuntH">coprime teeth wear evenly</div></div>
+</div>
+<svg id="schem" viewBox="0 0 860 190" role="img" aria-label="Gear train schematic"></svg>
+</div>
+
+<div class="card">
+<h2>5. Bonus: simple planetary</h2>
+<div class="grid">
+<div><label>Sun teeth</label><input id="pSun" type="number" step="1" value="24"></div>
+<div><label>Ring teeth</label><input id="pRing" type="number" step="1" value="72"></div>
+<div><label>Fixed member</label><select id="pFixed">
+<option value="ring" selected>Ring fixed (carrier out)</option>
+<option value="sun">Sun fixed (carrier out)</option>
+<option value="carrier">Carrier fixed (ring out, reverse)</option>
+</select></div>
+</div>
+<div class="verdicts">
+<div class="vc ok"><div class="k">RATIO</div><div class="n" id="pRatio">-</div><div class="h" id="pLabel">-</div></div>
+<div class="vc"><div class="k">PLANET TEETH</div><div class="n" id="pPlanet">-</div><div class="h">(ring - sun) / 2</div></div>
+<div class="vc"><div class="k">OUTPUT</div><div class="n" id="pOut">-</div><div class="h" id="pOutH">from your input above</div></div>
+</div>
+<div id="pWarns"></div>
+<p class="note">Willis equation: (sun - carrier) / (ring - carrier) = -ring/sun. Planet count and assembly rules are simplified - one planet, no load-sharing math.</p>
+</div>
+
+</main>
+<script src="engine.js"></script>
+<script>
+const $ = id => document.getElementById(id);
+let stageCount = 2;
+const DEFAULTS = [{driver:12,driven:60,type:'spur',lead:10},{driver:12,driven:60,type:'spur',lead:10}];
+let stageState = DEFAULTS.map(s => ({...s}));
+
+function renderStages() {
+  const host = $('stages'); host.innerHTML = '';
+  stageState.forEach((s, i) => {
+    const head = document.createElement('div'); head.className = 'stagehead';
+    head.innerHTML = `<span>Stage ${i+1}</span>` + (stageState.length > 1 ? `<button class="ghost" style="margin:0" data-del="${i}">remove</button>` : '');
+    host.appendChild(head);
+    const g = document.createElement('div'); g.className = 'grid';
+    g.innerHTML = `
+      <div><label>Driver teeth</label><input data-i="${i}" data-f="driver" type="number" step="1" value="${s.driver}"></div>
+      <div><label>Driven teeth</label><input data-i="${i}" data-f="driven" type="number" step="1" value="${s.driven}"></div>
+      <div><label>Type</label><select data-i="${i}" data-f="type">
+        <option value="spur" ${s.type==='spur'?'selected':''}>Spur (~98% mesh)</option>
+        <option value="helical" ${s.type==='helical'?'selected':''}>Helical (~98% mesh)</option>
+        <option value="bevel" ${s.type==='bevel'?'selected':''}>Bevel (~96% mesh)</option>
+        <option value="worm" ${s.type==='worm'?'selected':''}>Worm (lead model)</option>
+      </select></div>
+      <div class="leadcell" data-leadcell="${i}" style="display:${s.type==='worm'?'block':'none'}"><label>Worm lead angle (deg)</label><input data-i="${i}" data-f="lead" type="number" step="any" value="${s.lead}"></div>`;
+    host.appendChild(g);
+  });
+  host.querySelectorAll('input,select').forEach(el => el.addEventListener('input', onStageInput));
+  host.querySelectorAll('[data-del]').forEach(b => b.addEventListener('click', () => { stageState.splice(+b.dataset.del, 1); renderStages(); calc(); }));
+}
+
+function onStageInput(e) {
+  const i = +e.target.dataset.i, f = e.target.dataset.f;
+  if (f === 'type') {
+    stageState[i].type = e.target.value;
+    document.querySelector(`[data-leadcell="${i}"]`).style.display = e.target.value === 'worm' ? 'block' : 'none';
+  } else stageState[i][f] = +e.target.value;
+  calc();
+}
+
+function drawSchematic(sol) {
+  const svg = $('schem');
+  const n = sol.rows.length;
+  const W = 860, slot = W / n;
+  let x = slot * 0.5;
+  const cy = 95, maxN = 120;
+  const esc = t => String(t).replace(/</g,'&lt;');
+  let parts = '';
+  sol.rows.forEach((r, i) => {
+    const s = stageState[i];
+    const rd = 14 + 26 * Math.sqrt(s.driver / maxN);
+    const rn = 14 + 26 * Math.sqrt(Math.min(s.driven, maxN) / maxN);
+    const dy = cy - (rd + rn) * 0.55;
+    parts += `<circle cx="${x-rd*0.35}" cy="${cy+rd*0.4}" r="${rd}" fill="none" stroke="#f0b45a" stroke-width="2.5"/>`;
+    parts += `<text x="${x-rd*0.35}" y="${cy+rd*0.4+4}" fill="#f0b45a" font-size="13" text-anchor="middle">${esc(s.driver)}T</text>`;
+    parts += `<circle cx="${x+rn*0.35}" cy="${dy}" r="${rn}" fill="none" stroke="#5ac8e8" stroke-width="2.5"/>`;
+    parts += `<text x="${x+rn*0.35}" y="${dy+4}" fill="#5ac8e8" font-size="13" text-anchor="middle">${esc(s.driven)}T</text>`;
+    parts += `<text x="${x}" y="176" fill="#93a3b5" font-size="12" text-anchor="middle">stage ${i+1}: ${esc(r.ratio.toFixed(2))}:1, ${(r.eta*100).toFixed(0)}% ${esc(r.type)}</text>`;
+    if (i < n-1) parts += `<path d="M ${x+slot*0.28} ${cy+30} h ${slot*0.4}" stroke="#24313f" stroke-width="3"/><path d="M ${x+slot*0.68} ${cy+30} l -8 -5 v 10 z" fill="#24313f"/>`;
+    x += slot;
+  });
+  svg.innerHTML = parts;
+}
+
+function calc() {
+  const err = $('err');
+  const rpm = +$('rpm').value, torque = +$('torque').value, mod = +$('module').value;
+  const bad = stageState.some(s => !isFinite(s.driver) || !isFinite(s.driven) || s.driver < 1 || s.driven < 1 || s.driver > 500 || s.driven > 500)
+    || !isFinite(rpm) || rpm <= 0 || rpm > 100000 || !isFinite(torque) || torque <= 0 || torque > 1e6
+    || !isFinite(mod) || mod <= 0 || mod > 50;
+  if (bad) { err.style.display = 'block'; err.textContent = 'Check the numbers: teeth 1-500, speed and torque positive, module 0-50 mm.'; return; }
+  err.style.display = 'none';
+  const sol = Gearbox.solveTrain(stageState, rpm, torque);
+  $('vRatio').textContent = Gearbox.fmt(sol.totalRatio, 2) + ':1';
+  $('vRpm').textContent = sol.outRpm >= 100 ? Gearbox.fmt(sol.outRpm, 0) : Gearbox.fmt(sol.outRpm, 1);
+  $('vRpmH').textContent = `rpm, ${sol.direction} rotation`;
+  $('vTorque').textContent = sol.outTorque >= 100 ? Gearbox.fmt(sol.outTorque, 0) : Gearbox.fmt(sol.outTorque, 2);
+  $('vTorqueH').textContent = `N·m after ${Gearbox.fmt(sol.efficiency*100, 1)}% train efficiency`;
+  $('vDir').textContent = sol.direction === 'same' ? 'Same' : 'Reversed';
+  $('vEta').textContent = Gearbox.fmt(sol.efficiency * 100, 1) + '%';
+  $('vEtaH').textContent = `${stageState.length} mesh${stageState.length>1?'es':''}, losses compound`;
+  const tb = document.querySelector('#tbl tbody');
+  tb.innerHTML = sol.rows.map(r => `<tr><td>${r.stage}</td><td>${r.driver} &rarr; ${r.driven}</td><td>${r.type}</td><td>${Gearbox.fmt(r.ratio,2)}:1</td><td>${(r.eta*100).toFixed(0)}%</td><td>${Gearbox.fmt(r.outRpm,1)}</td><td>${Gearbox.fmt(r.outTorque,2)}</td><td>${r.dir}</td></tr>`).join('');
+  const w = $('warns');
+  w.innerHTML = sol.warnings.length ? `<div class="warnbox"><ul>${sol.warnings.map(x => `<li>${x}</li>`).join('')}</ul></div>` : '';
+  const s1 = stageState[0];
+  $('vCenter').textContent = Gearbox.fmt(Gearbox.centerDistance(mod, s1.driver, s1.driven), 1) + ' mm';
+  $('vCenterH').textContent = `stage 1, pitch ${Gearbox.fmt(Gearbox.pitchDia(mod, s1.driver),0)} + ${Gearbox.fmt(Gearbox.pitchDia(mod, s1.driven),0)} mm`;
+  const smallest = Math.min(...stageState.map(s => s.driver));
+  $('vSmall').textContent = smallest + ' T';
+  $('vSmallH').textContent = smallest < Gearbox.UNDERCUT_MIN ? 'under 17: undercut risk on standard 20-deg teeth' : 'at/above the 17-tooth published minimum';
+  const hunts = stageState.map(s => Gearbox.gcd(s.driver, s.driven));
+  $('vHunt').textContent = hunts.every(g => g === 1) ? 'All hunting' : 'Some repeat';
+  $('vHuntH').textContent = hunts.every(g => g === 1) ? 'every stage coprime - wear spreads' : 'a stage re-meets the same teeth (gcd ' + hunts.find(g=>g>1) + ')';
+  drawSchematic(sol);
+  // planetary
+  const sun = +$('pSun').value, ring = +$('pRing').value, fixed = $('pFixed').value;
+  if (sun >= 4 && ring > sun && ring <= 400 && Number.isInteger(sun) && Number.isInteger(ring)) {
+    const p = Gearbox.solvePlanetary(sun, ring, fixed, rpm, torque);
+    $('pRatio').textContent = Gearbox.fmt(Math.abs(p.ratio), 3) + ':1' + (p.reverse ? ' rev' : '');
+    $('pLabel').textContent = p.label;
+    $('pPlanet').textContent = p.planet;
+    $('pOut').textContent = Gearbox.fmt(Math.abs(p.outRpm), 1) + ' rpm';
+    $('pOutH').textContent = Gearbox.fmt(p.outTorque, 2) + ' N·m at 97% stage eta';
+    $('pWarns').innerHTML = p.warnings.length ? `<div class="warnbox"><ul>${p.warnings.map(x => `<li>${x}</li>`).join('')}</ul></div>` : '';
+  } else { $('pRatio').textContent = '-'; $('pLabel').textContent = 'ring > sun, integers'; $('pPlanet').textContent = '-'; $('pOut').textContent = '-'; $('pOutH').textContent = '-'; $('pWarns').innerHTML = ''; }
+}
+
+$('add').addEventListener('click', () => { if (stageState.length < 4) { stageState.push({driver:12, driven:48, type:'spur', lead:10}); renderStages(); calc(); } });
+$('presetRobot').addEventListener('click', () => { stageState = [{driver:12,driven:60,type:'spur',lead:10},{driver:12,driven:60,type:'spur',lead:10}]; $('rpm').value = 3000; $('torque').value = 0.5; renderStages(); calc(); });
+$('presetWorm').addEventListener('click', () => { stageState = [{driver:1,driven:40,type:'worm',lead:4},{driver:14,driven:42,type:'spur',lead:10}]; $('rpm').value = 1400; $('torque').value = 2; renderStages(); calc(); });
+['rpm','torque','module','pSun','pRing','pFixed'].forEach(id => $(id).addEventListener('input', calc));
+renderStages(); calc();
+</script>
+</body>
+</html>
