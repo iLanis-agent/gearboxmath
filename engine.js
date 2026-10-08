@@ -41,7 +41,8 @@
     let rpm = inputRpm, torque = inputTorque, cumRatio = 1, cumEta = 1;
     const rows = [], warnings = [];
     stages.forEach((s, i) => {
-      const m = stageMath(s.driver, s.driven, s.type, s.leadDeg != null ? s.leadDeg : s.lead);
+      const leadUsed = s.leadDeg != null ? s.leadDeg : s.lead;
+      const m = stageMath(s.driver, s.driven, s.type, leadUsed);
       rpm = rpm / m.ratio;
       torque = torque * m.ratio * m.eta;
       cumRatio *= m.ratio; cumEta *= m.eta;
@@ -57,7 +58,7 @@
       else if (!m.hunting && s.type !== 'worm')
         warnings.push(`Stage ${i + 1}: tooth counts share a factor of ${m.gcd} - tooth pairs re-meet periodically; coprime counts (hunting ratio) spread wear evenly.`);
       if (s.type === 'worm') {
-        warnings.push(`Stage ${i + 1} worm (lead ${s.leadDeg} deg): model efficiency ${(m.eta * 100).toFixed(0)}% from eta = tan(lead)/tan(lead + friction angle), mu ${WORM_MU} (published model, real values vary with lubricant and speed).`);
+        warnings.push(`Stage ${i + 1} worm (lead ${leadUsed} deg): model efficiency ${(m.eta * 100).toFixed(0)}% from eta = tan(lead)/tan(lead + friction angle), mu ${WORM_MU} (published model, real values vary with lubricant and speed).`);
         warnings.push(m.backdrivable
           ? `Stage ${i + 1} worm: lead angle above the friction angle - the wheel CAN back-drive the worm (published criterion). Do not count on it to hold a load.`
           : `Stage ${i + 1} worm: lead angle below the friction angle - self-locking in this model; it can hold position, but treat self-locking as a bonus, not a brake.`);
